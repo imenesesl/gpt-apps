@@ -17,7 +17,9 @@ async function main() {
       maxTokens: 2000
     });
     
-    console.log('Improved text:\n', improved);
+    console.log('---RESULT_START---');
+    console.log(improved);
+    console.log('---RESULT_END---');
   } catch (error) {
     console.error('Error:', error instanceof Error ? error.message : error);
     process.exit(1);

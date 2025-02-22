@@ -1,0 +1,46 @@
+name: AI Text Improvement
+
+on:
+  workflow_dispatch:
+    inputs:
+      text:
+        description: 'Text to improve'
+        required: true
+        type: string
+
+jobs:
+  improve-text:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'yarn'
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: Build packages
+        run: yarn build
+
+      - name: Run AI improvement
+        env:
+          GPT_API_KEY: ${{ secrets.GPT_API_KEY }}
+          ORGANIZATION_OPENAI: ${{ secrets.ORGANIZATION_OPENAI }}
+        id: improve
+        run: |
+          OUTPUT=$(yarn workspace @repo/ai-improvement dev "${{ github.event.inputs.text }}")
+          RESULT=$(echo "$OUTPUT" | sed -n '/---RESULT_START---/,/---RESULT_END---/p' | grep -v "---RESULT_")
+          echo "result<<EOF" >> $GITHUB_OUTPUT
+          echo "$RESULT" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      - name: Print improved text
+        run: |
+          echo "Improved text:"
+          echo "${{ steps.improve.outputs.result }}" 
