@@ -4,14 +4,14 @@ on:
   workflow_dispatch:
     inputs:
       text:
-        description: 'Text to improve'
+        description: "Text to improve"
         required: true
         type: string
 
 jobs:
   improve-text:
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -19,8 +19,8 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version-file: '.nvmrc'
-          cache: 'yarn'
+          node-version-file: ".nvmrc"
+          cache: "yarn"
 
       - name: Install dependencies
         run: yarn install --frozen-lockfile
@@ -41,6 +41,4 @@ jobs:
           echo "EOF" >> $GITHUB_OUTPUT
 
       - name: Print improved text
-        run: |
-          echo "Improved text:"
-          echo "${{ steps.improve.outputs.result }}" 
+        run: echo "${{ steps.improve.outputs.result }}"

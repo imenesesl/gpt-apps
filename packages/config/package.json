@@ -11,6 +11,8 @@
     "jiti": "^1.21.0",
     "ts-node": "^10.9.2",
     "ts-node-dev": "^2.0.0",
-    "typescript": "^5.7.3"
+    "typescript": "^5.7.3",
+    "eslint-plugin-markdown": "^3.0.0",
+    "eslint-plugin-yaml": "^0.5.0"
   }
 } 
