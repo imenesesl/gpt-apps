@@ -35,7 +35,7 @@ jobs:
         id: improve
         run: |
           OUTPUT=$(yarn workspace @repo/ai-improvement dev "${{ github.event.inputs.text }}")
-          RESULT=$(echo "$OUTPUT" | sed -n '/---RESULT_START---/,/---RESULT_END---/p' | grep -v "---RESULT_")
+          RESULT=$(echo "$OUTPUT" | awk '/---RESULT_START---/{flag=1;next}/---RESULT_END---/{flag=0}flag')
           echo "result<<EOF" >> $GITHUB_OUTPUT
           echo "$RESULT" >> $GITHUB_OUTPUT
           echo "EOF" >> $GITHUB_OUTPUT
