@@ -41,4 +41,8 @@ jobs:
           echo "EOF" >> $GITHUB_OUTPUT
 
       - name: Print improved text
-        run: echo "${{ steps.improve.outputs.result }}"
+        run: |
+          echo "Original text:"
+          echo "${{ fromJson(steps.improve.outputs.result).origin }}"
+          echo -e "\nImproved text:"
+          echo "${{ fromJson(steps.improve.outputs.result).improved }}"

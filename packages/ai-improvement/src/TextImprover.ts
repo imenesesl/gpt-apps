@@ -1,7 +1,7 @@
 import OpenAI from 'openai';
 import * as dotenv from 'dotenv';
 import * as path from 'path';
-import type { ImproveTextOptions } from './types';
+import type { ImproveTextOptions, ImproveTextResponse } from './types';
 
 dotenv.config({ path: path.resolve(__dirname, '../../../.env') });
 
@@ -26,18 +26,22 @@ export class TextImprover {
     text,
     maxTokens = 1000,
     temperature = 0.7
-  }: ImproveTextOptions): Promise<string> {
+  }: ImproveTextOptions): Promise<ImproveTextResponse> {
     try {
       const response = await this.openai.chat.completions.create({
-        model: 'gpt-4o',
+        model: 'gpt-4',
         messages: [
           {
             role: 'system',
-            content: 'You are a professional editor who improves text while maintaining its original meaning.'
+            content: `You are a professional editor who improves text while maintaining its original meaning.
+            You MUST respond in the same language as the input text.
+            If the text is in Spanish, respond in Spanish.
+            If the text is in English, respond in English.
+            Always maintain the same language as the input.`
           },
           {
             role: 'user',
-            content: `Please improve the following text while maintaining its core meaning. 
+            content: `Please improve the following text while maintaining its core meaning and its original language. 
             Make it more professional, clear, and well-structured:
 
             ${text}`
@@ -53,7 +57,10 @@ export class TextImprover {
         throw new Error('No improved text was generated');
       }
 
-      return improvedText;
+      return {
+        origin: text,
+        improved: improvedText
+      };
 
     } catch (error) {
       if (error instanceof Error) {

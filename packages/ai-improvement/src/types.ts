@@ -1,3 +1,8 @@
+export type ImproveTextResponse = {
+  origin: string;
+  improved: string;
+};
+
 export type ImproveTextOptions = {
   text: string;
   maxTokens?: number;

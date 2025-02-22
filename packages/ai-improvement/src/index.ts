@@ -12,13 +12,13 @@ async function main() {
     console.log('Original text:\n', inputText);
     console.log('\nImproving text...\n');
     
-    const improved = await improveText(inputText, {
+    const result = await improveText(inputText, {
       temperature: 0.7,
       maxTokens: 2000
     });
     
     console.log('---RESULT_START---');
-    console.log(improved);
+    console.log(JSON.stringify(result, null, 2));
     console.log('---RESULT_END---');
   } catch (error) {
     console.error('Error:', error instanceof Error ? error.message : error);
