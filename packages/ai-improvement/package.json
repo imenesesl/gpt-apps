@@ -20,15 +20,9 @@
     "type-check": "tsc --noEmit"
   },
   "devDependencies": {
-    "@repo/config": "*",
-    "@types/node": "^22.13.5",
-    "jiti": "^1.21.0",
-    "ts-node": "^10.9.2",
-    "ts-node-dev": "^2.0.0",
-    "typescript": "^5.7.3"
+    "@repo/config": "*"
   },
   "dependencies": {
-    "openai": "^4.0.0",
-    "dotenv": "^16.0.0"
+    "openai": "^4.0.0"
   }
 } 
