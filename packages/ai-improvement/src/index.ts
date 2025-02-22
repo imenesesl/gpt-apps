@@ -1,77 +1,27 @@
-import OpenAI from 'openai';
-import * as dotenv from 'dotenv';
-import * as path from 'path';
+import { improveText } from './improveText';
 
-// Load environment variables from root .env
-dotenv.config({ path: path.resolve(__dirname, '../../../.env') });
-
-interface ImproveTextOptions {
-  text: string;
-  maxTokens?: number;
-  temperature?: number;
-}
-
-class TextImprover {
-  private openai: OpenAI;
-
-  constructor() {
-    const apiKey = process.env.GPT_API_KEY;
+async function main() {
+  try {
+    // Get text from command line arguments
+    const inputText = process.argv.slice(2).join(' ');
     
-    if (!apiKey) {
-      throw new Error('GPT_API_KEY is not set in environment variables');
+    if (!inputText) {
+      throw new Error('Please provide text to improve. Usage: yarn dev "your text here"');
     }
 
-    this.openai = new OpenAI({
-      apiKey,
+    console.log('Original text:\n', inputText);
+    console.log('\nImproving text...\n');
+    
+    const improved = await improveText(inputText, {
+      temperature: 0.7,
+      maxTokens: 2000
     });
-  }
-
-  async improveText({
-    text,
-    maxTokens = 1000,
-    temperature = 0.7
-  }: ImproveTextOptions): Promise<string> {
-    try {
-      const response = await this.openai.chat.completions.create({
-        model: 'gpt-4',
-        messages: [
-          {
-            role: 'system',
-            content: 'You are a professional editor who improves text while maintaining its original meaning.'
-          },
-          {
-            role: 'user',
-            content: `Please improve the following text while maintaining its core meaning. 
-            Make it more professional, clear, and well-structured:
-
-            ${text}`
-          }
-        ],
-        max_tokens: maxTokens,
-        temperature: temperature,
-      });
-
-      const improvedText = response.choices[0]?.message?.content;
-      
-      if (!improvedText) {
-        throw new Error('No improved text was generated');
-      }
-
-      return improvedText;
-
-    } catch (error) {
-      if (error instanceof Error) {
-        throw new Error(`Failed to improve text: ${error.message}`);
-      }
-      throw error;
-    }
+    
+    console.log('Improved text:\n', improved);
+  } catch (error) {
+    console.error('Error:', error instanceof Error ? error.message : error);
+    process.exit(1);
   }
 }
 
-// Example usage
-const improveText = async (text: string): Promise<string> => {
-  const improver = new TextImprover();
-  return await improver.improveText({ text });
-};
-
-export { improveText, TextImprover, ImproveTextOptions }; 
+main(); 
